@@ -1,3 +1,50 @@
 /* Custom CSS 
     =========
 */
+.hidden {
+    display: none;
+}
+
+.opacity-50 {
+    opacity: 50%;
+}
+
+.custom-control {
+    padding-left: 2rem;
+}
+
+.custom-control-label:after, 
+.custom-control-label:before {
+    width: 1.5rem;
+    height: 1.5rem;
+    left: -2rem;
+    top: -.15rem;
+}
+
+div.block-01 div[class*="col-"] > div {
+    background-color: #b1e8aa;
+    padding: 20px 40px;
+}
+
+div.block-03 div[class*="col-"] > div {
+    background-color: #a1f295;
+    padding: 20px 30px;
+}
+
+div.block-01.block-correct div[class*="col-"] > div:after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -75px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 75px 75px 0 75px;
+    border-color: #b1e8aa transparent transparent transparent;
+}
+
+div.block-02 div[class*="col-"] > div {
+    background-color: #a1ea98;
+    padding: 20px 40px;
+}

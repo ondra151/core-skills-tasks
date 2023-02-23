@@ -11,8 +11,110 @@
 
     <body class="bg-light">
         <main>
-            <div class="container py-5">
-                <h1>Garage door configurator</h1>  
+            <div class="container py-5 text-center">
+                <h1 class="mb-4">Garage door configurator</h1> 
+                
+                <div class="row flex justify-content-center block-01 mb-5 pb-5">
+                    <div class="col-lg-5">
+                        <div>
+                            <div id="sirka" class="form-group">
+                                <label for="sirka" class="lead">Šířka otvoru</label>
+                                <div class="input-group">
+                                    <input id="input-sirka" name="sirka" type="text" class="form-control is-invalid" value="" maxlength="4">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">mm</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="vyska" class="form-group">
+                                <label for="vyska" class="lead">Výška otvoru</label>
+                                <div class="input-group">
+                                    <input id="input-vyska" name="vyska" type="number" class="form-control is-valid" value="" maxlength="4">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">mm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row flex justify-content-center block-02 pt-4 hidden">
+                    <div class="col-lg-5">
+                        <div>
+                            <div id="typ-vrat" class="form-group">
+                                <p class="lead">Typ vrat</p>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="typ-vrat-01" name="typ-vrat" class="custom-control-input">
+                                    <label class="custom-control-label" for="typ-vrat-01">Privátní</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="typ-vrat-02" name="typ-vrat" class="custom-control-input">
+                                    <label class="custom-control-label" for="typ-vrat-02">Průmyslová</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="typ-vrat-03" name="typ-vrat" class="custom-control-input">
+                                    <label class="custom-control-label" for="typ-vrat-03">EVO</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row flex justify-content-center block-03 pt-4">
+
+                    <div class="col-lg-4">
+                        <div class="text-left">
+                            <p class="lead">Pohon vrat</p>
+                            <div class="custom-control custom-radio mb-2">
+                                <input type="radio" id="pohon-vrat-01" name="pohon-vrat" class="custom-control-input input-radio-pohon">
+                                <label class="custom-control-label" for="pohon-vrat-01">nepotřebuji pohon</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-2">
+                                <input type="radio" id="pohon-vrat-02" name="pohon-vrat" class="custom-control-input input-radio-pohon">
+                                <label class="custom-control-label" for="pohon-vrat-02">Pohon 500</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-2">
+                                <input type="radio" id="pohon-vrat-03" name="pohon-vrat" class="custom-control-input input-radio-pohon">
+                                <label class="custom-control-label" for="pohon-vrat-03">Pohon 800XL</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-2">
+                                <input type="radio" id="pohon-vrat-04" name="pohon-vrat" class="custom-control-input input-radio-pohon">
+                                <label class="custom-control-label" for="pohon-vrat-04">Pohon 800XL růžový</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-2">
+                                <input type="radio" id="pohon-vrat-05" name="pohon-vrat" class="custom-control-input input-radio-pohon">
+                                <label class="custom-control-label" for="pohon-vrat-05">Pohon 1000MAX</label>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="text-left h-100">
+                                <p class="lead">Barva vrat</p>
+                                <select id="barva-vrat" class="custom-select mb-2"></select>
+                                <p class="small">Celkem na výběr <span id="barva-vrat-pocet">--</span> barev</p>
+                            </div>    
+                        </div>
+                        <div id="doplnky-vrat" class="col-lg-4">
+                            <div class="text-left h-100">
+                                <p class="lead">Doplňky vrat</p>
+                                <div class="custom-control custom-checkbox mb-2">
+                                    <input type="checkbox" id="doplnky-vrat-01" name="doplnky-vrat" class="custom-control-input">
+                                    <label class="custom-control-label" for="doplnky-vrat-01">maják</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mb-2">
+                                    <input type="checkbox" id="doplnky-vrat-02" name="doplnky-vrat" class="custom-control-input">
+                                    <label class="custom-control-label" for="doplnky-vrat-02">kódová klávesnice</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mb-2">
+                                    <input type="checkbox" id="doplnky-vrat-04" name="doplnky-vrat" class="custom-control-input">
+                                    <label class="custom-control-label" for="doplnky-vrat-04">dálkový ovladač navíc</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
