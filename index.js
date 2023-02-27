@@ -20,31 +20,35 @@ const sirkaOtvoruMax = 6500;
 const vyskaOtvoruMin = 1250;
 const vyskaOtvoruMax = 4300;
 
-const sirkaOtvoruInput = document.getElementById('input-sirka');
-const vyskaOtvoruInput = document.getElementById('input-vyska');
+const sirkaOtvoruInput = document.getElementById('input-width');
+const vyskaOtvoruInput = document.getElementById('input-height');
 
 /* Block 02 
     =======
 */
 const block02 = document.getElementsByClassName('block-02');
 
-const typVrat01 = document.getElementById('typ-vrat-01');
-const typVrat02 = document.getElementById('typ-vrat-02');
-const typVrat03 = document.getElementById('typ-vrat-03');
+const typeDoor01 = document.getElementById('type-door-01');
+const typeDoor02 = document.getElementById('type-door-02');
+const typeDoor03 = document.getElementById('type-door-03');
 
 const setTypeDoor = (width, height) => {
     width = Number(width);
     height = Number(height);
 
-    // if width > 4000mm
-    typVrat01.disabled = width > 3999;
+    // if width > 4000mm (prumyslova)
+    typeDoor01.disabled = width > 3999;
 
-    // if width < 4000mm
-    typVrat02.disabled = width < 4000;
+    // if width < 4000mm (privatni)
+    typeDoor02.disabled = width < 4000;
 
-    // if width > 3000mm || height > 3000mm
-    typVrat03.disabled = (width > 3000 || height > 3000);
+    // if width > 3000mm || height > 3000mm ()
+    typeDoor03.disabled = (width > 3000 || height > 3000);
 
+    //console.log('Width', width);
+
+    if (width < 4000) return 'pri'
+    else return 'pru'
 }
 
 /* Block 03 
@@ -54,14 +58,14 @@ const setTypeDoor = (width, height) => {
 const block03 = document.getElementsByClassName('block-03');
 
 // Pohon
-const pohonVrat01 = document.getElementById('pohon-vrat-01');
-const pohonVrat02 = document.getElementById('pohon-vrat-02');
-const pohonVrat03 = document.getElementById('pohon-vrat-03');
-const pohonVrat04 = document.getElementById('pohon-vrat-04');
-const pohonVrat05 = document.getElementById('pohon-vrat-05');
+// const driveDoor01 = document.getElementById('drive-door-01');
+// const driveDoor02 = document.getElementById('drive-door-02');
+// const driveDoor03 = document.getElementById('drive-door-03');
+// const driveDoor04 = document.getElementById('drive-door-04');
+// const driveDoor05 = document.getElementById('drive-door-05');
 
 // Barva
-const barvaVratArray = [
+const colorDoorArray = [
     {
         id: 1, 
         name: 'Bílá', 
@@ -94,30 +98,40 @@ const barvaVratArray = [
     }
 ];
 
-const generateBarvaVrat = (params) => {
+// Pohon
 
-    const barvaVrat = document.getElementById('barva-vrat');
-    barvaVrat.innerHTML = '';
-
-    let barvaVratArrayFilter = barvaVratArray.filter( (item, index) => {
-        console.log(params[index]);
-        item.value !== params[index]
-    });
-    console.log(barvaVratArrayFilter);
-
-    for (let j = 0; j < barvaVratArray.length; j++) {
-        let opt = document.createElement('option');
-        opt.value = barvaVratArray[j].value;
-        opt.innerHTML = barvaVratArray[j].name;
-        barvaVrat.appendChild(opt);
+const driveDoorArray = [
+    {
+        id: 106, 
+        type: 'nepotřebuji pohon',
+        power: '', 
+        info: ''
+    },
+    {
+        id: 14, 
+        type: 'Pohon', 
+        power: 500,
+        info: ''
+    },
+    {
+        id: 18, 
+        type: 'Pohon', 
+        power: 800,
+        info: ''
+    },
+    {
+        id: 8, 
+        type: 'Pohon', 
+        power: 850,
+        info: 'XL růžový'
+    }, 
+    {
+        id: 42, 
+        type: 'Pohon', 
+        power: 1000,
+        info: 'MAX'
     }
-
-    let barvaVratPocet = document.getElementById('barva-vrat-pocet').innerHTML = barvaVratArray.length;   
-}
-
-// Doplnky
-const doplnkyVrat = document.getElementById('doplnky-vrat');
-
+];
 
 // ------------
 
@@ -146,6 +160,16 @@ let hasClass = (item, className) => {
 sirkaOtvoruInput.placeholder = `${sirkaOtvoruMin} - ${sirkaOtvoruMax}${lengthUnit}`;
 vyskaOtvoruInput.placeholder = `${vyskaOtvoruMin} - ${vyskaOtvoruMax}${lengthUnit}`;
 
+/**
+ * Control input value for input 'Sirka otvoru' and 'Vyska otvoru'
+ * 
+ * @param {object} data
+ * @param {number} min 
+ * @param {number} max
+ * 
+ * @return Set / unset valid class for input, show / hide selected blocks configurator
+
+*/
 let controlInputValue = (data, min, max) => {
     let value = data.target.value;
     let item = data.target;
@@ -168,7 +192,9 @@ let controlInputValue = (data, min, max) => {
     if (block01Arrow) {
         block01[0].classList.add('block-correct');
         block02[0].classList.remove('hidden');
-        generateBarvaVrat(['modra', 'cervena']);
+        generateDriveDoors();
+        choiceDrive()
+        generateColorDoor(setTypeDoor(sirkaOtvoruInput.value, vyskaOtvoruInput.value));
     } else {
         block01[0].classList.remove('block-correct');
         block02[0].classList.add('hidden');
@@ -178,30 +204,106 @@ let controlInputValue = (data, min, max) => {
 sirkaOtvoruInput.addEventListener('input', (data) => controlInputValue(data, sirkaOtvoruMin, sirkaOtvoruMax));
 vyskaOtvoruInput.addEventListener('input', (data) => controlInputValue(data, vyskaOtvoruMin, vyskaOtvoruMax));
 
-// Pohon
-document.querySelectorAll('.input-radio-pohon').forEach(element => {
+
+/**
+ * Generate color for selected type doors
+ * 
+ * @param {string} type 
+ * 
+ * @return Create options for listbox (colors) + show info text (about colors)
+ */
+const generateColorDoor = (type) => {
+    const colorDoor = document.getElementById('color-door');
+
+    let excludeColors = type == 'pri' ? [''] : ['modra', 'antracitova'];
+    let colorDoorArrayFilter = colorDoorArray.filter( item => excludeColors.indexOf(item.value) == -1 );
+
+    colorDoor.innerHTML = '';
+
+    for (let j = 0; j < colorDoorArrayFilter.length; j++) {
+        let opt = document.createElement('option');
+        opt.value = colorDoorArrayFilter[j].value;
+        opt.innerHTML = colorDoorArrayFilter[j].name;
+        colorDoor.appendChild(opt);
+    }
+
+    let suffix;
+
+    switch(colorDoorArrayFilter.length) {
+        case 1:
+            suffix = 'barva';
+            break;
+        case 2, 3, 4: 
+            suffix = 'barvy';
+            break;
+        default:
+            suffix = 'barev';
+    }
+
+    document.getElementById('color-door-amount').innerHTML = `${colorDoorArrayFilter.length} ${suffix}`;   
+}
+
+/**
+ * Generate list of drive doors
+ */
+const generateDriveDoors = () => {
+
+    let listDrive = '';
+    driveDoorArray.forEach( el => {
+        listDrive += `
+            <div class="custom-control custom-radio mb-2">
+                <input type="radio" id="drive-door-${el.id}" name="drive-door" class="custom-control-input input-radio-drive">
+                <label class="custom-control-label" for="drive-door-${el.id}">${el.type} ${el.power}${el.info}</label>
+            </div>`
+    });
+
+    document.getElementById('drive-door').innerHTML = listDrive;
+}
+
+/**
+ * Change drive of door
+ */
+function choiceDrive() {
+    document.querySelectorAll('.input-radio-drive').forEach(element => {
+        element.addEventListener('change', function() {
+
+            const driveDoor01 = this.id === 'drive-door-106' && this.checked;
+            const driveDoor05 = this.id === 'drive-door-42' && this.checked;
+
+            driveDoor01 ? accessoriesDoor.classList.add('opacity-50') : accessoriesDoor.classList.remove('opacity-50');
+
+            accessoriesDoor04.checked = driveDoor05 ? true : false;
+            accessoriesDoor04.disabled = driveDoor05 ? true : false;
+        })
+    });
+}
+
+/**
+ * 
+ */
+document.querySelectorAll('.custom-radio-type-door').forEach( element => {
     element.addEventListener('change', function() {
+        const typeDoorId = element.children[0].id;
 
-        const pohonVrat01 = this.id == 'pohon-vrat-01' && this.checked;
-        const pohonVrat05 = this.id == 'pohon-vrat-05' && this.checked;
+        driveDoorArray.forEach( item => {
 
-        pohonVrat01 ? doplnkyVrat.classList.add('opacity-50') : doplnkyVrat.classList.remove('opacity-50');
-
-        doplnkyVrat04.checked = pohonVrat05 ? true : false;
-        doplnkyVrat04.disabled = pohonVrat05 ? true : false;
+            if (typeDoorId === 'type-door-01') {
+                console.log(typeof item.power === 'number' && item.power > 900);
+                document.getElementById(`drive-door-${item.id}`).disabled = 
+                    (typeof item.power === 'number' && item.power > 900) ? true : false;
+            } else if (typeDoorId === 'type-door-02') {
+                console.log(item);
+                document.getElementById(`drive-door-${item.id}`).disabled = 
+                    (typeof item.power === 'number' && item.power < 800) ? true : false;
+            } else {
+                console.log(typeof item.power === 'number' && (item.power === 500 || item.power === 850));
+                document.getElementById(`drive-door-${item.id}`).disabled = 
+                    (typeof item.power === 'number' && (item.power === 500 || item.power === 850)) ? false : true;    
+            }
+        })
     })
 });
 
 // Doplnky
-const doplnkyVrat04 = document.getElementById('doplnky-vrat-04');
-
-// const doplnkyVratCheckboxes = document.getElementsByName('doplnky-vrat');
-
-
-// doplnkyVratCheckboxes.forEach( element => {
-//     element.addEventListener('change', function() {
-
-//     })
-// })
-
-
+const accessoriesDoor = document.getElementById('accessories-door');
+const accessoriesDoor04 = document.getElementById('accessories-door-04');

@@ -13,6 +13,11 @@
     padding-left: 2rem;
 }
 
+.custom-control-input {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
 .custom-control-label:after, 
 .custom-control-label:before {
     width: 1.5rem;
