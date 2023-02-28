@@ -200,9 +200,11 @@ let controlInputValue = (data, min, max) => {
         
         block01[0].classList.add('block-correct');
         block02[0].classList.remove('hidden');
+        block03[0].classList.remove('hidden');
     } else {
         block01[0].classList.remove('block-correct');
         block02[0].classList.add('hidden');
+        block03[0].classList.add('hidden');
     }
 }
 
