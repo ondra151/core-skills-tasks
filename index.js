@@ -4,67 +4,18 @@
 
 console.log('Hello in building configuration :-)'); 
 
+/**
+ * Set variables, array, object
+ */
+
 const lengthUnit = 'mm';
-
-/* Block 01 
-    =======
-*/
-
-const block01 = document.getElementsByClassName('block-01');
-
-let block01Arrow = false;
-
 const sirkaOtvoruMin = 500;
 const sirkaOtvoruMax = 6500;
 
 const vyskaOtvoruMin = 1250;
 const vyskaOtvoruMax = 4300;
 
-const sirkaOtvoruInput = document.getElementById('input-width');
-const vyskaOtvoruInput = document.getElementById('input-height');
-
-/* Block 02 
-    =======
-*/
-const block02 = document.getElementsByClassName('block-02');
-
-const typeDoor01 = document.getElementById('type-door-01');
-const typeDoor02 = document.getElementById('type-door-02');
-const typeDoor03 = document.getElementById('type-door-03');
-
-const setTypeDoor = (width, height) => {
-    width = Number(width);
-    height = Number(height);
-
-    // if width > 4000mm (prumyslova)
-    typeDoor01.disabled = width > 3999;
-
-    // if width < 4000mm (privatni)
-    typeDoor02.disabled = width < 4000;
-
-    // if width > 3000mm || height > 3000mm ()
-    typeDoor03.disabled = (width > 3000 || height > 3000);
-
-    //console.log('Width', width);
-
-    if (width < 4000) return 'pri'
-    else return 'pru'
-}
-
-/* Block 03 
-    ==========
-*/
-
-const block03 = document.getElementsByClassName('block-03');
-
-// Pohon
-// const driveDoor01 = document.getElementById('drive-door-01');
-// const driveDoor02 = document.getElementById('drive-door-02');
-// const driveDoor03 = document.getElementById('drive-door-03');
-// const driveDoor04 = document.getElementById('drive-door-04');
-// const driveDoor05 = document.getElementById('drive-door-05');
-
-// Barva
+// Color door
 const colorDoorArray = [
     {
         id: 1, 
@@ -98,7 +49,7 @@ const colorDoorArray = [
     }
 ];
 
-// Pohon
+// Drive door
 
 const driveDoorArray = [
     {
@@ -133,21 +84,46 @@ const driveDoorArray = [
     }
 ];
 
+/* Block 01 
+    =======
+*/
+let block01Arrow = false;
+
+const block01 = document.getElementsByClassName('block-01');
+
+const sirkaOtvoruInput = document.getElementById('input-width');
+const vyskaOtvoruInput = document.getElementById('input-height');
+
+/* Block 02 
+    =======
+*/
+const block02 = document.getElementsByClassName('block-02');
+
+const typeDoor01 = document.getElementById('type-door-01');
+const typeDoor02 = document.getElementById('type-door-02');
+const typeDoor03 = document.getElementById('type-door-03');
+
+/* Block 03 
+    ==========
+*/
+
+const block03 = document.getElementsByClassName('block-03');
+
 // ------------
 
-// remove 'is-invalid' class for all input´s
+// Remove 'is-invalid' class for all input´s
 const allInputs = document.querySelectorAll('.form-control');
 
 for (let i = 0; i < allInputs.length; i++) {
     allInputs[i].classList.remove('is-valid', 'is-invalid');
 }
 
-// helper function 'add class'
+// Helper function 'add class'
 let addClass = (item, state) => {
     item.classList.add(state == 'is-valid' ? 'is-valid' : 'is-invalid');
 }
 
-// helper function 'remove class'
+// Helper function 'remove class'
 let removeClass = (item, state) => {
     item.classList.remove(state == 'is-valid' ? 'is-valid' : 'is-invalid');   
 }
@@ -156,9 +132,37 @@ let hasClass = (item, className) => {
     return item.className.indexOf(className) > -1;
 }
 
-// set placeholder for input
+// Set placeholder for input
 sirkaOtvoruInput.placeholder = `${sirkaOtvoruMin} - ${sirkaOtvoruMax}${lengthUnit}`;
 vyskaOtvoruInput.placeholder = `${vyskaOtvoruMin} - ${vyskaOtvoruMax}${lengthUnit}`;
+
+/**
+ * Calculate type of door according width and height from input
+ * 
+ * @param {string} width 
+ * @param {string} height 
+ * @returns Type door: pri = privatni + evo | pru = prumyslova
+ */
+
+const setTypeDoor = (width, height) => {
+    width = Number(width);
+    height = Number(height);
+
+    // if width > 4000mm (prumyslova)
+    typeDoor01.disabled = width > 3999;
+
+    // if width < 4000mm (privatni)
+    typeDoor02.disabled = width < 4000;
+
+    // if width > 3000mm || height > 3000mm (no evo)
+    typeDoor03.disabled = (width > 3000 || height > 3000);
+
+    checkTypeDoor();
+    checkAccessoriesDoor();
+
+    if (width < 4000) return 'pri'
+    else return 'pru'
+}
 
 /**
  * Control input value for input 'Sirka otvoru' and 'Vyska otvoru'
@@ -190,11 +194,12 @@ let controlInputValue = (data, min, max) => {
     }, 300);
 
     if (block01Arrow) {
+        generateDriveDoors();
+        generateColorDoor(setTypeDoor(sirkaOtvoruInput.value, vyskaOtvoruInput.value));
+        choiceDrive();
+        
         block01[0].classList.add('block-correct');
         block02[0].classList.remove('hidden');
-        generateDriveDoors();
-        choiceDrive()
-        generateColorDoor(setTypeDoor(sirkaOtvoruInput.value, vyskaOtvoruInput.value));
     } else {
         block01[0].classList.remove('block-correct');
         block02[0].classList.add('hidden');
@@ -204,6 +209,18 @@ let controlInputValue = (data, min, max) => {
 sirkaOtvoruInput.addEventListener('input', (data) => controlInputValue(data, sirkaOtvoruMin, sirkaOtvoruMax));
 vyskaOtvoruInput.addEventListener('input', (data) => controlInputValue(data, vyskaOtvoruMin, vyskaOtvoruMax));
 
+
+/** 
+ * Check selection type of door
+ */
+
+const checkTypeDoor = () => {
+    document.querySelectorAll('.custom-radio-type-door').forEach(el => {
+        if (el.children[0].checked && el.children[0].disabled) {
+            el.children[0].checked = false;   
+        }
+    })
+}
 
 /**
  * Generate color for selected type doors
@@ -263,6 +280,10 @@ const generateDriveDoors = () => {
 /**
  * Change drive of door
  */
+
+const accessoriesDoor = document.getElementById('accessories-door');
+const accessoriesDoor04 = document.getElementById('accessories-door-04');
+
 function choiceDrive() {
     document.querySelectorAll('.input-radio-drive').forEach(element => {
         element.addEventListener('change', function() {
@@ -278,8 +299,18 @@ function choiceDrive() {
     });
 }
 
+/** 
+ * Check selection type of door
+ */
+
+const checkAccessoriesDoor = () => {
+    document.getElementsByName('accessories-door').forEach(el => {
+        el.checked = false;   
+    })
+}
+
 /**
- * 
+ * Disabled type if drive according type door
  */
 document.querySelectorAll('.custom-radio-type-door').forEach( element => {
     element.addEventListener('change', function() {
@@ -287,23 +318,23 @@ document.querySelectorAll('.custom-radio-type-door').forEach( element => {
 
         driveDoorArray.forEach( item => {
 
+            // disabled: power > 900
             if (typeDoorId === 'type-door-01') {
-                console.log(typeof item.power === 'number' && item.power > 900);
                 document.getElementById(`drive-door-${item.id}`).disabled = 
                     (typeof item.power === 'number' && item.power > 900) ? true : false;
-            } else if (typeDoorId === 'type-door-02') {
-                console.log(item);
+            } 
+            // disabled: power <= 800
+            else if (typeDoorId === 'type-door-02') {
                 document.getElementById(`drive-door-${item.id}`).disabled = 
-                    (typeof item.power === 'number' && item.power < 800) ? true : false;
-            } else {
-                console.log(typeof item.power === 'number' && (item.power === 500 || item.power === 850));
+                    (typeof item.power === 'number' && item.power <= 800) ? true : false;
+            } 
+            // disabled: power != 500 || 800
+            else {
                 document.getElementById(`drive-door-${item.id}`).disabled = 
-                    (typeof item.power === 'number' && (item.power === 500 || item.power === 850)) ? false : true;    
+                    (typeof item.power === 'number') ? 
+                        ((item.power === 500 || item.power === 850) ? false : true) 
+                    : false;    
             }
         })
     })
 });
-
-// Doplnky
-const accessoriesDoor = document.getElementById('accessories-door');
-const accessoriesDoor04 = document.getElementById('accessories-door-04');
