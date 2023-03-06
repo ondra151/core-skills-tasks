@@ -37,11 +37,11 @@ const colorDoorArray = [
         name: 'Červená', 
         value: 'cervena'
     },
-    {
-        id: 5, 
-        name: 'RAL 8014', 
-        value: 'zlaty_dub'
-    }, 
+    // {
+    //     id: 5, 
+    //     name: 'RAL 8014', 
+    //     value: 'zlaty_dub'
+    // }, 
     {
         id: 6, 
         name: 'RAL 7016', 
@@ -87,9 +87,8 @@ const driveDoorArray = [
 /* Block 01 
     =======
 */
-let block01Arrow = false;
 
-const block01 = document.getElementsByClassName('block-01');
+const block01 = document.querySelector('.block-01');
 
 const sirkaOtvoruInput = document.getElementById('input-width');
 const vyskaOtvoruInput = document.getElementById('input-height');
@@ -97,7 +96,8 @@ const vyskaOtvoruInput = document.getElementById('input-height');
 /* Block 02 
     =======
 */
-const block02 = document.getElementsByClassName('block-02');
+const block02 = document.querySelector('.block-02');
+
 
 const typeDoor01 = document.getElementById('type-door-01');
 const typeDoor02 = document.getElementById('type-door-02');
@@ -107,7 +107,7 @@ const typeDoor03 = document.getElementById('type-door-03');
     ==========
 */
 
-const block03 = document.getElementsByClassName('block-03');
+const block03 = document.querySelector('.block-03');
 
 // ------------
 
@@ -187,24 +187,24 @@ let controlInputValue = (data, min, max) => {
         addClass(item, 'is-valid');
     }
 
-    block01Arrow = ( hasClass(sirkaOtvoruInput, 'is-valid') && hasClass(vyskaOtvoruInput, 'is-valid') ) > 0 ? true : false;
+    let block01Arrow = hasClass(sirkaOtvoruInput, 'is-valid') && hasClass(vyskaOtvoruInput, 'is-valid');
 
-    setTimeout(() => {
+    //setTimeout(() => {
         setTypeDoor(sirkaOtvoruInput.value, vyskaOtvoruInput.value);
-    }, 300);
+    //}, 0);
 
     if (block01Arrow) {
         generateDriveDoors();
         generateColorDoor(setTypeDoor(sirkaOtvoruInput.value, vyskaOtvoruInput.value));
         choiceDrive();
         
-        block01[0].classList.add('block-correct');
-        block02[0].classList.remove('hidden');
-        block03[0].classList.remove('hidden');
+        block01.classList.add('block-correct');
+        block02.classList.remove('hidden');
+        block03.classList.remove('hidden');
     } else {
-        block01[0].classList.remove('block-correct');
-        block02[0].classList.add('hidden');
-        block03[0].classList.add('hidden');
+        block01.classList.remove('block-correct');
+        block02.classList.add('hidden');
+        block03.classList.add('hidden');
     }
 }
 
@@ -239,6 +239,9 @@ const generateColorDoor = (type) => {
 
     colorDoor.innerHTML = '';
 
+    // for (let i of colorDoorArrayFilter) {
+
+    // }
     for (let j = 0; j < colorDoorArrayFilter.length; j++) {
         let opt = document.createElement('option');
         opt.value = colorDoorArrayFilter[j].value;
@@ -252,7 +255,9 @@ const generateColorDoor = (type) => {
         case 1:
             suffix = 'barva';
             break;
-        case 2, 3, 4: 
+        case 2:
+        case 3:
+        case 4: 
             suffix = 'barvy';
             break;
         default:
@@ -295,8 +300,8 @@ function choiceDrive() {
 
             driveDoor01 ? accessoriesDoor.classList.add('opacity-50') : accessoriesDoor.classList.remove('opacity-50');
 
-            accessoriesDoor04.checked = driveDoor05 ? true : false;
-            accessoriesDoor04.disabled = driveDoor05 ? true : false;
+            accessoriesDoor04.checked = driveDoor05;
+            accessoriesDoor04.disabled = driveDoor05;
         })
     });
 }
