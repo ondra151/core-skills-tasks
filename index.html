@@ -20,7 +20,7 @@
                             <div id="sirka" class="form-group">
                                 <label for="width" class="lead">Šířka otvoru</label>
                                 <div class="input-group">
-                                    <input id="input-width" name="width" type="text" class="form-control is-invalid" value="" maxlength="4">
+                                    <input id="input-width" name="width" type="number" min="500" max="6500" class="form-control" value="" placeholder = '500 - 6500mm'>
                                     <div class="input-group-append">
                                         <span class="input-group-text">mm</span>
                                     </div>
@@ -30,7 +30,7 @@
                             <div id="vyska" class="form-group">
                                 <label for="height" class="lead">Výška otvoru</label>
                                 <div class="input-group">
-                                    <input id="input-height" name="height" type="number" class="form-control is-valid" value="" maxlength="4">
+                                    <input id="input-height" name="height" type="number" min="1250" max="4300" class="form-control" value="" placeholder="1250 - 4300mm">
                                     <div class="input-group-append">
                                         <span class="input-group-text">mm</span>
                                     </div>
@@ -67,13 +67,42 @@
                     <div class="col-lg-4">
                         <div class="text-left">
                             <p class="lead">Pohon vrat</p>
-                            <div id="drive-door"></div>
+                            <div id="drive-door">
+                                <div class="custom-control custom-radio mb-2">
+                                    <input type="radio" id="drive-door-pohon_no" name="drive-door" class="custom-control-input input-radio-drive">
+                                    <label class="custom-control-label" for="drive-door-pohon_no">Nepotřebuji pohon</label>
+                                </div>
+                                <div class="custom-control custom-radio mb-2">
+                                    <input type="radio" id="drive-door-pohon_500" name="drive-door" class="custom-control-input input-radio-drive">
+                                    <label class="custom-control-label" for="drive-door-pohon_500">Pohon 500</label>
+                                </div>
+                                <div class="custom-control custom-radio mb-2">
+                                    <input type="radio" id="drive-door-pohon_800" name="drive-door" class="custom-control-input input-radio-drive">
+                                    <label class="custom-control-label" for="drive-door-pohon_800">Pohon 800</label>
+                                </div>
+                                <div class="custom-control custom-radio mb-2">
+                                    <input type="radio" id="drive-door-pohon_850" name="drive-door" class="custom-control-input input-radio-drive">
+                                    <label class="custom-control-label" for="drive-door-pohon_850">Pohon 850 XL růžový</label>
+                                </div>
+                                <div class="custom-control custom-radio mb-2">
+                                    <input type="radio" id="drive-door-pohon_1000" name="drive-door" class="custom-control-input input-radio-drive">
+                                    <label class="custom-control-label" for="drive-door-pohon_1000">Pohon 1000 MAX</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <div class="text-left h-100">
                             <p class="lead">Barva vrat</p>
-                            <select id="color-door" class="custom-select mb-2"></select>
+                            <select id="color-door" class="custom-select mb-2">
+                                <option value="bila">Bílá</option> 
+                                <option value="hneda">Hnědá</option>
+                                <option value="modra">Modrá</option>
+                                <option value="cervena">Červená</option>
+                                <option value="ral_8014">Zlatý dub</option> 
+                                <option value="anctracitova">Antracitová</option>  
+
+                            </select>
                             <p class="small">Celkem na výběr <span id="color-door-amount">-- barev</span></p>
                         </div>    
                     </div>

@@ -28,7 +28,7 @@
 
 div.block-01 div[class*="col-"] > div {
     background-color: #b1e8aa;
-    padding: 20px 40px;
+    padding: 20px 40px; 
 }
 
 div.block-03 div[class*="col-"] > div {
