@@ -10,15 +10,14 @@ console.log('Hello in building configuration :-)');
 
 const unitDoor = 'mm';
 
-let widthDoor = 0;
-let isWidthDoorCorrect = false;
-let heightDoor = 0;
-let isHeightDoorCorrect = false;
-
-let typeDoor = '';
-let driveDoor = '';
-let colorDoor = '';
-let accessoriesDoor = '';
+var widthDoor = 0;
+var isWidthDoorCorrect = false;
+var heightDoor = 0;
+var isHeightDoorCorrect = false;
+var typeDoor = '';
+var driveDoor = '';
+var colorDoor = '';
+var accessoriesDoor = '';
 
 // Elements
 const widthDoorInput = document.getElementById('input-width');
@@ -129,7 +128,6 @@ const getDimensionState = (min, max, value, event) => {
 }
 
 const setTypeDoor = (width, height) => {
-    console.log('setTypeDoor');
 
     // if width > 4000mm (prumyslova)
     document.getElementById('type-door-01').disabled = width > 3999;
