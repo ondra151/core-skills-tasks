@@ -51,58 +51,46 @@ let hasClass = (item, className) => item.className.indexOf(className) > -1;
 // addEventListener
 
 widthDoorInput.addEventListener('input', (data) => {
-    setWidth(data);
 
-    if (isWidthDoorCorrect && isHeightDoorCorrect) {
-        setTypeDoor(widthDoor, heightDoor);
-        toggleContentBlock('block-01', 'block-correct', 1);
-        toggleContentBlock('block-02', 'hidden', 0);
-    } else {
-        toggleContentBlock('block-01', 'block-correct', 0);
-        toggleContentBlock('block-02', 'hidden', 1);
-    }
+    let min = Number(data.target.min);
+    let max = Number(data.target.max);
+    let value = Number(data.target.value);
+
+    setWidth(min, max, value);
+    checkDimensionState(min, max, widthDoor, data);
+    renderBlocks();
 });
+
 heightDoorInput.addEventListener('input', (data) => {
-    setHeight(data);
 
-    if (isWidthDoorCorrect && isHeightDoorCorrect) {
-        setTypeDoor(widthDoor, heightDoor);
-        toggleContentBlock('block-01', 'block-correct', 1);
-        toggleContentBlock('block-02', 'hidden', 0);
-    } else {
-        toggleContentBlock('block-01', 'block-correct', 0);
-        toggleContentBlock('block-02', 'hidden', 1);
-    }
+    let min = Number(data.target.min);
+    let max = Number(data.target.max);
+    let value = Number(data.target.value);
+
+    setHeight(min, max, value);
+    checkDimensionState(min, max, heightDoor, data);
+    renderBlocks();
 });
-
 
 // -----------
 // Function
 
 // Set width door
-const setWidth = (event) => {
-
-    let min = Number(event.target.min);
-    let max = Number(event.target.max);
-    let value = Number(event.target.value);
-
-    widthDoor = (value >= min) && (value <= max) ? value : 0;
-    getDimensionState(min, max, widthDoor, event);
-}
+const setWidth = (min, max, value) => widthDoor = (value >= min) && (value <= max) ? value : 0;
 
 // Set height door
-const setHeight = (event) => {
+const setHeight = (min, max, value) => heightDoor = (value >= min) && (value <= max) ? value : 0;
 
-    let min = Number(event.target.min);
-    let max = Number(event.target.max);
-    let value = Number(event.target.value);
-    
-    heightDoor = (value >= min) && (value <= max) ? value : 0;
-    getDimensionState(min, max, heightDoor, event);
-}
+/**
+ * Checking the correctness of values
+ * 
+ * @param { number } min 
+ * @param { number } max 
+ * @param { number } value 
+ * @param { object } event 
+ */
 
-// Checking the correctness of values
-const getDimensionState = (min, max, value, event) => {
+const checkDimensionState = (min, max, value, event) => {
 
     let state = (value >= min && value <= max);
     
@@ -127,7 +115,26 @@ const getDimensionState = (min, max, value, event) => {
     //return isWidthDoorCorrect && isHeightDoorCorrect;
 }
 
-const setTypeDoor = (width, height) => {
+// Render HTML blocks
+const renderBlocks = () => {
+    if (isWidthDoorCorrect && isHeightDoorCorrect) {
+        renderTypeDoor(widthDoor, heightDoor);
+        toggleContentBlock('block-01', 'block-correct', 1);
+        toggleContentBlock('block-02', 'hidden', 0);
+    } else {
+        toggleContentBlock('block-01', 'block-correct', 0);
+        toggleContentBlock('block-02', 'hidden', 1);
+    }
+}
+
+/**
+ * Disabled option for Type Door
+ * 
+ * @param { number } width 
+ * @param { number} height 
+ */
+
+const renderTypeDoor = (width, height) => {
 
     // if width > 4000mm (prumyslova)
     document.getElementById('type-door-01').disabled = width > 3999;
@@ -139,6 +146,14 @@ const setTypeDoor = (width, height) => {
     document.getElementById('type-door-03').disabled = (width > 3000 || height > 3000);
 }
 
+/**
+ * Toggle class on selected elements
+ * 
+ * @param { string } blockClass 
+ * @param { string } nameClass 
+ * @param { boolean } state 
+ * @return Add / remove class for selected elements 
+ */
 const toggleContentBlock = (blockClass, nameClass, state) => {
     return state ? document.getElementsByClassName(blockClass)[0].classList.add(nameClass) : document.getElementsByClassName(blockClass)[0].classList.remove(nameClass)
 }
