@@ -10,14 +10,14 @@ console.log('Hello in building configuration :-)');
 
 const unitDoor = 'mm';
 
-var widthDoor = 0;
-var isWidthDoorCorrect = false;
-var heightDoor = 0;
-var isHeightDoorCorrect = false;
-var typeDoor = '';
-var driveDoor = '';
-var colorDoor = '';
-var accessoriesDoor = '';
+let widthDoor = 0;
+let isWidthDoorCorrect = false;
+let heightDoor = 0;
+let isHeightDoorCorrect = false;
+let typeDoor = '';
+let driveDoor = '';
+let colorDoor = '';
+let accessoriesDoor = '';
 
 // Elements
 const widthDoorInput = document.getElementById('input-width');
@@ -30,12 +30,12 @@ const colorDoorAmount = document.getElementById('color-door-amount');
 const accessoriesDoorCheckbox = document.getElementsByName('accessories-door');
 
 
-// Remove 'is-invalid' class for all input´s
-const allInputs = document.querySelectorAll('.form-control');
+// // Remove 'is-invalid' class for all input´s
+// const allInputs = document.querySelectorAll('.form-control');
 
-for (let i = 0; i < allInputs.length; i++) {
-    allInputs[i].classList.remove('is-valid', 'is-invalid');
-}
+// for (let i = 0; i < allInputs.length; i++) {
+//     allInputs[i].classList.remove('is-valid', 'is-invalid');
+// }
 
 // Helper function 'add class'
 let addClass = (item, state) => item.classList.add(state ? 'is-valid' : 'is-invalid');
@@ -45,7 +45,16 @@ let removeClass = (item, state) => item.classList.remove(state ? 'is-valid' : 'i
 
 let toggleClass = (item, className) => item.classList.toggle(className);
 
-let hasClass = (item, className) => item.className.indexOf(className) > -1;
+let hasClass = (item, className) => item.classList.contains(className);
+
+let renderValidityClass = (element, isValid) => {
+    element.classList.toggle('is-valid', isValid);
+    element.classList.toggle('is-invalid', !isValid);
+} 
+
+// indexOf = string, pozice
+// includes = string
+// contains = classList
 
 // ----------
 // addEventListener
@@ -57,7 +66,7 @@ widthDoorInput.addEventListener('input', (data) => {
     let value = Number(data.target.value);
 
     setWidth(min, max, value);
-    checkDimensionState(min, max, widthDoor, data);
+    renderWidthValidity();
     renderBlocks();
 });
 
@@ -68,51 +77,47 @@ heightDoorInput.addEventListener('input', (data) => {
     let value = Number(data.target.value);
 
     setHeight(min, max, value);
-    checkDimensionState(min, max, heightDoor, data);
+    renderHeightValidity();
     renderBlocks();
+});
+
+
+typeDoorRadio.forEach( el => {
+    el.addEventListener('input', (event) => {
+        setTypeDoor(event.target.id, event.target)
+    })
 });
 
 // -----------
 // Function
 
 // Set width door
-const setWidth = (min, max, value) => widthDoor = (value >= min) && (value <= max) ? value : 0;
+const setWidth = (min, max, value) => {
+
+    isWidthDoorCorrect = (value >= min) && (value <= max);
+    widthDoor = value;
+
+}
 
 // Set height door
-const setHeight = (min, max, value) => heightDoor = (value >= min) && (value <= max) ? value : 0;
+const setHeight = (min, max, value) => {
+
+    isHeightDoorCorrect = (value >= min) && (value <= max);
+    heightDoor = value;
+
+}
 
 /**
  * Checking the correctness of values
  * 
- * @param { number } min 
- * @param { number } max 
- * @param { number } value 
- * @param { object } event 
  */
 
-const checkDimensionState = (min, max, value, event) => {
+const renderWidthValidity = () => {
+    renderValidityClass(widthDoorInput, isWidthDoorCorrect);
+}
 
-    let state = (value >= min && value <= max);
-    
-    if (state) {
-        addClass(event.target, state); 
-        removeClass(event.target, !state); 
-    } else {
-        addClass(event.target, state); 
-        removeClass(event.target, !state);
-    }
-
-    // is width correct
-    if (event.target.id === widthDoorInput.id) {
-        isWidthDoorCorrect = (event.target.id === widthDoorInput.id) && value > 0;
-    } 
-
-    // is height correct
-    else if (event.target.id === heightDoorInput.id) {
-        isHeightDoorCorrect = (event.target.id === heightDoorInput.id) && value > 0; 
-    }
-
-    //return isWidthDoorCorrect && isHeightDoorCorrect;
+const renderHeightValidity = () => {
+    renderValidityClass(heightDoorInput, isHeightDoorCorrect);
 }
 
 // Render HTML blocks
@@ -121,7 +126,6 @@ const renderBlocks = () => {
         renderTypeDoor(widthDoor, heightDoor);
         toggleContentBlock('block-01', 'block-correct', 1);
         toggleContentBlock('block-02', 'hidden', 0);
-        readTypeDoor();
     } else {
         toggleContentBlock('block-01', 'block-correct', 0);
         toggleContentBlock('block-02', 'hidden', 1);
@@ -145,6 +149,10 @@ const renderTypeDoor = (width, height) => {
 
     // if width > 3000mm || height > 3000mm (no evo)
     document.getElementById('type-door-03').disabled = (width > 3000 || height > 3000);
+
+    typeDoorRadio.forEach( el => {
+        if (el.checked && el.disabled) { el.checked = false; }
+    });
 }
 
 /**
@@ -159,15 +167,6 @@ const toggleContentBlock = (blockClass, nameClass, state) => {
     return state ? document.getElementsByClassName(blockClass)[0].classList.add(nameClass) : document.getElementsByClassName(blockClass)[0].classList.remove(nameClass)
 }
 
-const readTypeDoor = () => {
-    typeDoorRadio.forEach( el => {
-        if (el.checked && el.disabled) { el.checked = false; }
-
-        el.addEventListener('input', (event) => {
-            setTypeDoor(event.target.id, event.target)
-        })
-    })
-}
 
 /**
  * Set type door
