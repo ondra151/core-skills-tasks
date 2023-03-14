@@ -121,6 +121,7 @@ const renderBlocks = () => {
         renderTypeDoor(widthDoor, heightDoor);
         toggleContentBlock('block-01', 'block-correct', 1);
         toggleContentBlock('block-02', 'hidden', 0);
+        readTypeDoor();
     } else {
         toggleContentBlock('block-01', 'block-correct', 0);
         toggleContentBlock('block-02', 'hidden', 1);
@@ -157,6 +158,28 @@ const renderTypeDoor = (width, height) => {
 const toggleContentBlock = (blockClass, nameClass, state) => {
     return state ? document.getElementsByClassName(blockClass)[0].classList.add(nameClass) : document.getElementsByClassName(blockClass)[0].classList.remove(nameClass)
 }
+
+const readTypeDoor = () => {
+    typeDoorRadio.forEach( el => {
+        if (el.checked && el.disabled) { el.checked = false; }
+
+        el.addEventListener('input', (event) => {
+            setTypeDoor(event.target.id, event.target)
+        })
+    })
+}
+
+/**
+ * Set type door
+ * 
+ * @param { string } id 
+ */
+const setTypeDoor = (id) => {
+    let type = id.split('-')[2];
+    typeDoor = type === '01' ? 'pri' : type === '02' ? 'pru' : 'evo';
+}
+
+
 
 
 
