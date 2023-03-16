@@ -88,7 +88,10 @@ typeDoorRadio.forEach( el => {
         let value = event.target.value;
 
         setTypeDoor(value);
+
         disableDriveDoor(value);
+        renderDriveDoor();
+
         disableColorDoor(value);
         amountColorDoor();
 
@@ -244,12 +247,17 @@ const disableAccessoriesDoor = (drive) => {
 const giftAccessoriesDoor = (drive) => {
     accessoriesDoorCheckbox.forEach (el => {
 
-        let gift = el.value === 'ovladac_navic';
-        let driveWithGift = drive === '1000';
+        let isGift = el.value === 'ovladac_navic';
+        let isDriveWithGift = drive === '1000';
 
-        if (gift) { 
-            el.checked = driveWithGift;
-            el.disabled = driveWithGift;
+        // gift: checked & disabled 
+        if (isGift && isDriveWithGift) { 
+            el.checked = isDriveWithGift;
+            el.disabled = isDriveWithGift;
+        } 
+        // gift: not disabled
+        else if (isGift && !isDriveWithGift) {
+            el.disabled = isDriveWithGift;    
         }
     })
 }
@@ -315,12 +323,7 @@ const renderBlocks = () => {
  * 
  */
 const renderBlockComponents = () => {
-
-    renderDriveDoor();
-
-    let isSetRequiredData = (typeDoor && isWidthDoorCorrect && isHeightDoorCorrect) ? true : false;
-    toggleContentBlock('block-03', 'hidden', !isSetRequiredData);    
-
+    toggleContentBlock('block-03', 'hidden', !((typeDoor && isWidthDoorCorrect && isHeightDoorCorrect) ? true : false));    
 }
 
 /**
