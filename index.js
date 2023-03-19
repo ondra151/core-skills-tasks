@@ -25,12 +25,13 @@ let accessoriesDoor = new Set();
 const widthDoorInput = document.getElementById('input-width');
 const heightDoorInput = document.getElementById('input-height');
 
-const typeDoorRadio = document.getElementsByName('type-door');
+const typeDoorRadio = Array.from(document.getElementsByName('type-door'));
 const driveDoorRadio = document.getElementsByName('drive-door');
 const colorDoorSelect = document.getElementById('color-door');
 const colorDoorAmount = document.getElementById('color-door-amount');
 const accessoriesDoorBlock = document.getElementById('accessories-door');
-const accessoriesDoorCheckbox = document.getElementsByName('accessories-door');
+const accessoriesDoorCheckbox = Array.from(document.getElementsByName('accessories-door'));
+//const accessoriesDoorCheckbox = [...document.getElementsByName('accessories-door')];
 
 /**
  *  Helper function 
@@ -88,14 +89,9 @@ typeDoorRadio.forEach( el => {
         let value = event.target.value;
 
         setTypeDoor(value);
-
-        disableDriveDoor(value);
         renderDriveDoor();
-
-        disableColorDoor(value);
-        amountColorDoor();
-
-        renderBlockComponents();
+        renderColorDoor();
+        renderBlock03();
     })
 });
 
@@ -108,8 +104,7 @@ driveDoorRadio.forEach (el => {
         let drive = event.target.value
 
         setDriveDoor(drive);
-        disableAccessoriesDoor(drive);
-        giftAccessoriesDoor(drive)
+        renderAccessoriesDoor();
     });
 });
 
@@ -125,8 +120,8 @@ colorDoorSelect.addEventListener('change', (event) => {
  * Accessories Door addEventListener
  */
 accessoriesDoorCheckbox.forEach( el => {
-    el.addEventListener('input', (e) => {
-        setAccessoriesDoor(e.target.value);
+    el.addEventListener('input', (event) => {
+        setAccessoriesDoor(event.target.value);
     })
 })
 
@@ -144,7 +139,6 @@ const setWidth = (min, max, value) => {
 
     isWidthDoorCorrect = (value >= min) && (value <= max);
     widthDoor = value;
-
 }
 
 /**
@@ -158,7 +152,6 @@ const setHeight = (min, max, value) => {
 
     isHeightDoorCorrect = (value >= min) && (value <= max);
     heightDoor = value;
-
 }
 
 /**
@@ -203,18 +196,24 @@ const setAccessoriesDoor = (value) => {
  * 
  * @param { string } type 
  */
-const disableDriveDoor = (type) => {
+const renderDriveDoor = () => {
     driveDoorRadio.forEach( el => {
         let value = Number(el.value);
 
-        if (type === 'pri') {
+        if (typeDoor === 'pri') {
             el.disabled = value > 900;   
-        } else if (type === 'pru') {
+        } else if (typeDoor === 'pru') {
             el.disabled = value <= 800;
-        } else if (type === 'evo') {
+        } else if (typeDoor === 'evo') {
             el.disabled = (value > 0 && value !== 500) && (value > 0 && value !== 850);
+        } else {
+            el.disabled = false;    
         }
-    })
+
+        if (el.checked && el.disabled) { 
+            el.checked = false; 
+        }
+    });
 }
 
 /**
@@ -222,57 +221,16 @@ const disableDriveDoor = (type) => {
  * 
  * @param { string } type 
  */
-const disableColorDoor = (type) => {
-    Object.values(colorDoorSelect.options).forEach (el => {
-        el.disabled = (type === 'pru') ? (el.value === 'bila' || el.value === 'cervena') : false;
-    }); 
-}
+const renderColorDoor = () => {
 
-/**
- * Set disable item for accessories door
- * 
- * @param { string } drive 
- */
-const disableAccessoriesDoor = (drive) => {
-    let isDisabledBlock = accessoriesDoorBlock.classList.toggle('opacity-50', drive === 'no');
-
-    if (isDisabledBlock) accessoriesDoorCheckbox.forEach (el => el.checked = false)
-}
-
-/**
- * Set automatic gift for selected drive
- * 
- * @param { string } drive 
- */
-const giftAccessoriesDoor = (drive) => {
-    accessoriesDoorCheckbox.forEach (el => {
-
-        let isGift = el.value === 'ovladac_navic';
-        let isDriveWithGift = drive === '1000';
-
-        // gift: checked & disabled 
-        if (isGift && isDriveWithGift) { 
-            el.checked = isDriveWithGift;
-            el.disabled = isDriveWithGift;
-        } 
-        // gift: not disabled
-        else if (isGift && !isDriveWithGift) {
-            el.disabled = isDriveWithGift;    
-        }
-    })
-}
-
-/**
- * Calculation of allowed colours
- * 
- */
-const amountColorDoor = () => {
     let amount = 0;
     let text = '';
 
     Object.values(colorDoorSelect.options).forEach (el => {
+        el.disabled = (typeDoor === 'pru') ? (el.value === 'bila' || el.value === 'cervena') : false;
+
         if (!el.disabled) amount += 1;
-    });
+    }); 
 
     switch(amount) {
         case 1:
@@ -288,6 +246,33 @@ const amountColorDoor = () => {
     }
     
     colorDoorAmount.innerHTML = `${amount} ${text}`;
+}
+
+/**
+ * Set disable item for accessories door
+ * 
+ */
+const renderAccessoriesDoor = () => {
+    let isDisabledBlock = accessoriesDoorBlock.classList.toggle('opacity-50', driveDoor === 'no');
+
+    accessoriesDoorCheckbox.forEach (el => {
+
+        el.disabled = isDisabledBlock; 
+
+        if (isDisabledBlock) {
+            el.checked = false;   
+        }
+    });
+
+    // opravit gift
+    let element = accessoriesDoorCheckbox.find(el => el.value === 'ovladac_navic');
+    let isDriveWithGift = driveDoor === '1000';
+
+    element.disabled = isDriveWithGift;
+
+    if (isDriveWithGift) { 
+        element.checked = true;
+    }
 }
 
 /**
@@ -307,14 +292,15 @@ const renderHeightValidity = () => {
  * Render blocks (dimensions, type)
  * 
  */
+// upravit
 const renderBlocks = () => {
     if (isWidthDoorCorrect && isHeightDoorCorrect) {
         renderTypeDoor(widthDoor, heightDoor);
-        toggleContentBlock('block-01', 'block-correct', 1);
-        toggleContentBlock('block-02', 'hidden', 0);
+        toggleContentBlock('block-01', 'block-correct', true);
+        toggleContentBlock('block-02', 'hidden', false);
     } else {
-        toggleContentBlock('block-01', 'block-correct', 0);
-        toggleContentBlock('block-02', 'hidden', 1);
+        toggleContentBlock('block-01', 'block-correct', false);
+        toggleContentBlock('block-02', 'hidden', true);
     }
 }
 
@@ -322,8 +308,8 @@ const renderBlocks = () => {
  * Render next blocks (drive, color, accessories)
  * 
  */
-const renderBlockComponents = () => {
-    toggleContentBlock('block-03', 'hidden', !((typeDoor && isWidthDoorCorrect && isHeightDoorCorrect) ? true : false));    
+const renderBlock03 = () => {
+    toggleContentBlock('block-03', 'hidden', !typeDoor || !isWidthDoorCorrect || !isHeightDoorCorrect);    
 }
 
 /**
@@ -345,32 +331,16 @@ const renderTypeDoor = (width, height) => {
     document.getElementById('type-door-03').disabled = (width > 3000 || height > 3000);
 
     // Type Door
-    typeDoorRadio.forEach( el => {
-        if (el.checked && el.disabled) { 
-            el.checked = false; 
-            typeDoor = '';
+    let element = typeDoorRadio.find(el => el.checked && el.disabled);
 
-            renderBlockComponents();
-        }
-    });
+    if (element) {
+        element.checked = false;
+        typeDoor = '';
+        renderBlock03();   
+    }
+    
 }
 
-/**
- * Render Drive Door
- * 
- */
-const renderDriveDoor = () => {
-    driveDoorRadio.forEach( el => {
-
-        if (el.checked && el.disabled) { 
-            el.checked = false; 
-        }
-
-        if (!typeDoor) {
-            el.disabled = false;
-        }
-    });
-}
 
 /**
  * Toggle class on selected elements
