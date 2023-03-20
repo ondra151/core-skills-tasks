@@ -31,13 +31,11 @@ const colorDoorSelect = document.getElementById('color-door');
 const colorDoorAmount = document.getElementById('color-door-amount');
 const accessoriesDoorBlock = document.getElementById('accessories-door');
 const accessoriesDoorCheckbox = Array.from(document.getElementsByName('accessories-door'));
-//const accessoriesDoorCheckbox = [...document.getElementsByName('accessories-door')];
 
 /**
  *  Helper function 
  */
 let addClass = (item, state) => item.classList.add(state ? 'is-valid' : 'is-invalid');
-
 
 let removeClass = (item, state) => item.classList.remove(state ? 'is-valid' : 'is-invalid'); 
 
@@ -64,7 +62,8 @@ widthDoorInput.addEventListener('input', (data) => {
 
     setWidth(min, max, value);
     renderWidthValidity();
-    renderBlocks();
+    renderBlock02();
+    renderBlock03();
 });
 
 /**
@@ -78,7 +77,8 @@ heightDoorInput.addEventListener('input', (data) => {
 
     setHeight(min, max, value);
     renderHeightValidity();
-    renderBlocks();
+    renderBlock02();
+    renderBlock03();
 });
 
 /**
@@ -192,9 +192,8 @@ const setAccessoriesDoor = (value) => {
 
 
 /**
- * Set disable item for drive door
+ * Render drive door
  * 
- * @param { string } type 
  */
 const renderDriveDoor = () => {
     driveDoorRadio.forEach( el => {
@@ -217,9 +216,8 @@ const renderDriveDoor = () => {
 }
 
 /**
- * Set disable item for color door
+ * Render color door
  * 
- * @param { string } type 
  */
 const renderColorDoor = () => {
 
@@ -249,7 +247,7 @@ const renderColorDoor = () => {
 }
 
 /**
- * Set disable item for accessories door
+ * Render accessories door
  * 
  */
 const renderAccessoriesDoor = () => {
@@ -268,7 +266,7 @@ const renderAccessoriesDoor = () => {
     let element = accessoriesDoorCheckbox.find(el => el.value === 'ovladac_navic');
     let isDriveWithGift = driveDoor === '1000';
 
-    element.disabled = isDriveWithGift;
+    element.disabled = isDisabledBlock ? !isDriveWithGift : isDriveWithGift;
 
     if (isDriveWithGift) { 
         element.checked = true;
@@ -292,16 +290,13 @@ const renderHeightValidity = () => {
  * Render blocks (dimensions, type)
  * 
  */
-// upravit
-const renderBlocks = () => {
+const renderBlock02 = () => {
     if (isWidthDoorCorrect && isHeightDoorCorrect) {
         renderTypeDoor(widthDoor, heightDoor);
-        toggleContentBlock('block-01', 'block-correct', true);
-        toggleContentBlock('block-02', 'hidden', false);
-    } else {
-        toggleContentBlock('block-01', 'block-correct', false);
-        toggleContentBlock('block-02', 'hidden', true);
     }
+
+    toggleContentBlock('block-01', 'block-correct', isWidthDoorCorrect && isHeightDoorCorrect);
+    toggleContentBlock('block-02', 'hidden', !isWidthDoorCorrect || !isHeightDoorCorrect);
 }
 
 /**
@@ -309,7 +304,10 @@ const renderBlocks = () => {
  * 
  */
 const renderBlock03 = () => {
-    toggleContentBlock('block-03', 'hidden', !typeDoor || !isWidthDoorCorrect || !isHeightDoorCorrect);    
+    toggleContentBlock('block-03', 'hidden', !typeDoor || !isWidthDoorCorrect || !isHeightDoorCorrect);  
+    console.log('!typeDoor', !typeDoor);
+    console.log('!isWidthDoorCorrect', !isWidthDoorCorrect);
+    console.log('!isHeightDoorCorrect', !isHeightDoorCorrect);  
 }
 
 /**
@@ -330,7 +328,7 @@ const renderTypeDoor = (width, height) => {
     // if width > 3000mm || height > 3000mm (no evo)
     document.getElementById('type-door-03').disabled = (width > 3000 || height > 3000);
 
-    // Type Door
+    // type Door
     let element = typeDoorRadio.find(el => el.checked && el.disabled);
 
     if (element) {
