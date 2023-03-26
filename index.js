@@ -266,7 +266,7 @@ const renderAccessoriesDoor = () => {
     let element = accessoriesDoorCheckbox.find(el => el.value === 'ovladac_navic');
     let isDriveWithGift = driveDoor === '1000';
 
-    element.disabled = isDisabledBlock ? !isDriveWithGift : isDriveWithGift;
+    element.disabled = isDisabledBlock || isDriveWithGift;
 
     if (isDriveWithGift) { 
         element.checked = true;
@@ -305,9 +305,9 @@ const renderBlock02 = () => {
  */
 const renderBlock03 = () => {
     toggleContentBlock('block-03', 'hidden', !typeDoor || !isWidthDoorCorrect || !isHeightDoorCorrect);  
-    console.log('!typeDoor', !typeDoor);
-    console.log('!isWidthDoorCorrect', !isWidthDoorCorrect);
-    console.log('!isHeightDoorCorrect', !isHeightDoorCorrect);  
+    // console.log('!typeDoor', !typeDoor);
+    // console.log('!isWidthDoorCorrect', !isWidthDoorCorrect);
+    // console.log('!isHeightDoorCorrect', !isHeightDoorCorrect);  
 }
 
 /**
