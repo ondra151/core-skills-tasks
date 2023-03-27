@@ -225,7 +225,7 @@ const renderColorDoor = () => {
     let text = '';
 
     Object.values(colorDoorSelect.options).forEach (el => {
-        el.disabled = (typeDoor === 'pru') ? (el.value === 'bila' || el.value === 'cervena') : false;
+        el.disabled = typeDoor === 'pru' && (el.value === 'bila' || el.value === 'cervena');
 
         if (!el.disabled) amount += 1;
     }); 
@@ -251,7 +251,9 @@ const renderColorDoor = () => {
  * 
  */
 const renderAccessoriesDoor = () => {
-    let isDisabledBlock = accessoriesDoorBlock.classList.toggle('opacity-50', driveDoor === 'no');
+
+    let isDisabledBlock = driveDoor === 'no';
+    accessoriesDoorBlock.classList.toggle('opacity-50', isDisabledBlock);
 
     accessoriesDoorCheckbox.forEach (el => {
 
