@@ -264,7 +264,6 @@ const renderAccessoriesDoor = () => {
         }
     });
 
-    // opravit gift
     let element = accessoriesDoorCheckbox.find(el => el.value === 'ovladac_navic');
     let isDriveWithGift = driveDoor === '1000';
 
@@ -307,9 +306,6 @@ const renderBlock02 = () => {
  */
 const renderBlock03 = () => {
     toggleContentBlock('block-03', 'hidden', !typeDoor || !isWidthDoorCorrect || !isHeightDoorCorrect);  
-    // console.log('!typeDoor', !typeDoor);
-    // console.log('!isWidthDoorCorrect', !isWidthDoorCorrect);
-    // console.log('!isHeightDoorCorrect', !isHeightDoorCorrect);  
 }
 
 /**
